@@ -1,0 +1,102 @@
+@page "/"
+@rendermode InteractiveServer
+
+<PageTitle>SafeVault account</PageTitle>
+
+<main class="form-card">
+    <h1>SafeVault</h1>
+    <AntiforgeryToken />
+
+    @if (_session is not null)
+    {
+        <p class="form-status success" role="status">Signed in as @_session.Username (@_session.Role).</p>
+        @if (_session.Role == UserRoles.Admin)
+        {
+            <p><a href="/admin">Open admin dashboard</a></p>
+        }
+        <button type="button" @onclick="SignOutAsync">Sign out</button>
+    }
+    else
+    {
+        <p>Create an account or sign in with your username and password.</p>
+
+        @if (RegistrationStatus == "success")
+        {
+            <p class="form-status success" role="status">Account created. You can now sign in.</p>
+        }
+        else if (!string.IsNullOrEmpty(RegistrationStatus))
+        {
+            <p class="form-status error" role="alert">
+                Account creation could not be completed. Check your details and try again.
+            </p>
+        }
+
+        @if (!string.IsNullOrEmpty(_loginError))
+        {
+            <p class="form-status error" role="alert">@_loginError</p>
+        }
+
+        <h2>Create account</h2>
+        <form method="post" action="/account/register">
+            <AntiforgeryToken />
+            <div class="form-field">
+                <label for="register-username">Username</label>
+                <input id="register-username"
+                       name="Username"
+                       maxlength="100"
+                       autocomplete="username"
+                       required />
+            </div>
+
+            <div class="form-field">
+                <label for="register-email">Email</label>
+                <input id="register-email"
+                       name="Email"
+                       type="email"
+                       maxlength="100"
+                       autocomplete="email"
+                       required />
+            </div>
+
+            <div class="form-field">
+                <label for="register-password">Password</label>
+                <input id="register-password"
+                       name="Password"
+                       type="password"
+                       minlength="12"
+                       maxlength="128"
+                       autocomplete="new-password"
+                       required />
+            </div>
+
+            <button type="submit">Create account</button>
+        </form>
+
+        <h2>Sign in</h2>
+        <EditForm Model="_login" OnValidSubmit="SignInAsync">
+            <DataAnnotationsValidator />
+            <div class="form-field">
+                <label for="login-username">Username</label>
+                <InputText id="login-username"
+                           @bind-Value="_login.Username"
+                           maxlength="100"
+                           autocomplete="username" />
+                <ValidationMessage For="@(() => _login.Username)" />
+            </div>
+
+            <div class="form-field">
+                <label for="login-password">Password</label>
+                <InputText id="login-password"
+                           type="password"
+                           @bind-Value="_login.Password"
+                           maxlength="128"
+                           autocomplete="current-password" />
+                <ValidationMessage For="@(() => _login.Password)" />
+            </div>
+
+            <button type="submit" disabled="@_isSigningIn">
+                @(_isSigningIn ? "Signing in..." : "Sign in")
+            </button>
+        </EditForm>
+    }
+</main>

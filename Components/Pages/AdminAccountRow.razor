@@ -1,0 +1,32 @@
+<tr>
+    <td>@Account.Username</td>
+    <td>@Account.Role</td>
+    <td>
+        <label class="visually-hidden" for="role-@Account.UserId">
+            Role for @Account.Username
+        </label>
+        <select id="role-@Account.UserId"
+                value="@Account.Role"
+                @onchange="HandleRoleChanged">
+            <option value="@UserRoles.User">User</option>
+            <option value="@UserRoles.Admin">Admin</option>
+        </select>
+        <button type="button" @onclick="Save">
+            Save role
+        </button>
+    </td>
+</tr>
+
+@code {
+    [Parameter, EditorRequired]
+    public UserAccount Account { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<string?> RoleChanged { get; set; }
+
+    [Parameter]
+    public EventCallback Save { get; set; }
+
+    private Task HandleRoleChanged(ChangeEventArgs args) =>
+        RoleChanged.InvokeAsync(args.Value?.ToString());
+}

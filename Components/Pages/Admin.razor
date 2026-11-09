@@ -1,0 +1,44 @@
+@page "/admin"
+@rendermode InteractiveServer
+
+<PageTitle>Admin dashboard</PageTitle>
+
+<main class="form-card">
+    <AntiforgeryToken />
+    <h1>Admin dashboard</h1>
+    <p>Manage account roles. Access to account data and role changes requires an admin access token.</p>
+
+    @if (_status == "updated")
+    {
+        <p class="form-status success" role="status">The account role was updated.</p>
+    }
+    else if (!string.IsNullOrEmpty(_status))
+    {
+        <p class="form-status error" role="alert">@_status</p>
+    }
+
+    @if (!string.IsNullOrEmpty(_loadError))
+    {
+        <p class="form-status error" role="alert">@_loadError</p>
+    }
+    else
+    {
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">Username</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Update</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var account in _accounts)
+                {
+                    <AdminAccountRow Account="account"
+                                     RoleChanged="role => SetSelectedRole(account.UserId, role)"
+                                     Save="() => UpdateRoleAsync(account.UserId)" />
+                }
+            </tbody>
+        </table>
+    }
+</main>

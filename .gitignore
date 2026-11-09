@@ -1,0 +1,38 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+[Aa]rtifacts/
+[Pp]ublish/
+
+# Visual Studio and editors
+.vs/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Test output
+[Tt]est[Rr]esult*/
+*.trx
+coverage/
+coverage.*.json
+
+# .NET tooling
+*.DotSettings.user
+.config/dotnet-tools.json.user
+
+# Local configuration and secrets
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+.env
+.env.*
+!.env.example
+
+# OS-generated files
+.DS_Store
+Thumbs.db
